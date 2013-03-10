@@ -1,0 +1,40 @@
+loc_id#location#state#forecast_date#issue_date#issue_time#min_0#max_0#min_1#max_1#min_2#max_2#min_3#max_3#min_4#max_4#min_5#max_5#min_6#max_6#min_7#max_7#forecast_0#forecast_1#forecast_2#forecast_3#forecast_4#forecast_5#forecast_6#forecast_7#
+033002#Ayr / Home Hill#QLD#20130301#20130228#160740#24#31###############A shower or two, chance storm.########
+039006#Biloela#QLD#20130301#20130228#142616#20#28###############Showers, possible storm.########
+033257#Bowen#QLD#20130301#20130228#160740#24#31###############A shower or two, chance storm.########
+040913#Brisbane#QLD#20130301#20130228#161655#22#27#21#25#21#26#21#26#21#26#21#26#22#28###Showers, late rain.#Cloudy, showers.#A few showers.#A few showers.#A few showers.#A few showers.#A shower or two.##
+040842#Brisbane Bayside#QLD#20130301#20130228#161655#21#27#######################
+039128#Bundaberg#QLD#20130301#20130228#163432#21#29#20#26#20#26#21#29#########Showers increasing.#Showers, rain at times.#A few showers.#A few showers.#####
+031011#Cairns#QLD#20130301#20130228#160047#25#32#25#33#25#32#25#32#########A shower or two.#Showers/Rain.#Showers/Rain.#Showers/Rain.#####
+044021#Charleville#QLD#20130301#20130228#144503#19#29#17#29#############Morning rain, storm.#Chance light shower.#######
+034084#Charters Towers#QLD#20130301#20130228#182110#23#34###############A few showers, chance storm.########
+035019#Clermont#QLD#20130301#20130228#140055#22#31###############Shower or two, possible storm.########
+031017#Cooktown#QLD#20130301#20130228#160047#25#32###############A shower or two.########
+041522#Dalby#QLD#20130301#20130228#162810#19#24###############Showers, rain periods.########
+035264#Emerald#QLD#20130301#20130228#140055#22#30###############Shower or two, possible storm.########
+039123#Gladstone#QLD#20130301#20130228#142616#23#29#23#29#############A few showers.#Showers, possible storm.#######
+040717#Gold Coast#QLD#20130301#20130228#161706#21#27#20#25#20#25#20#26#20#26#21#26#21#27###Showers, late rain.#Cloudy, showers.#A few showers.#A few showers.#A few showers.#A few showers.#A shower or two.##
+041521#Goondiwindi#QLD#20130301#20130228#162810#20#23###############Showers, rain periods.########
+040093#Gympie#QLD#20130301#20130228#163432#19#27#20#25#############Showers increasing.#Showers, rain at times.#######
+040765#Hervey Bay#QLD#20130301#20130228#163432#22#29#22#26#############Showers increasing.#Showers, rain at times.#######
+032078#Ingham#QLD#20130301#20130228#160740#25#33###############A shower or two, chance storm.########
+032025#Innisfail#QLD#20130301#20130228#160047#25#32###############A shower or two.########
+040004#Ipswich#QLD#20130301#20130228#161706#20#26#20#24#18#25#18#25#19#26#19#26#21#27###Showers, late rain.#Cloudy, showers.#A few showers.#A few showers.#A few showers.#A few showers.#A shower or two.##
+040112#Kingaroy#QLD#20130301#20130228#163432#18#23###############Showers, rain.########
+036031#Longreach#QLD#20130301#20130228#145754#22#32#20#34#############Shower or two, chance storm.#Fine, mostly sunny.#######
+033119#Mackay#QLD#20130301#20130228#141734#23#29#23#29#23#29#23#30#########Showers, possible storm.#Showers, possible storm.#Showers, possible storm.#Shower or two, possible storm.#####
+031190#Mareeba#QLD#20130301#20130228#160047#22#32###############Late shower/storm########
+040126#Maryborough#QLD#20130301#20130228#163432#21#29#21#26#############Showers increasing.#Showers, rain at times.#######
+034038#Moranbah#QLD#20130301#20130228#140055#23#31###############Shower or two, possible storm.########
+029127#Mount Isa#QLD#20130301#20130228#155510#25#42#25#39#############Chance late shower.#Fine, mostly sunny.#######
+029041#Normanton#QLD#20130301#20130228#152616#27#35###############Shower or two, chance storm.########
+039083#Rockhampton#QLD#20130301#20130228#142616#23#29#23#28#22#28#22#29#########Showers, possible storm.#Showers, possible storm.#Showers, possible storm.#Shower or two, possible storm.#####
+043091#Roma#QLD#20130301#20130228#144503#19#25###############Rain, storm.########
+040264#Sunshine Coast#QLD#20130301#20130228#161706#21#27#21#25#20#26#21#26#21#27#21#27#22#28###Showers, late rain.#Cloudy, showers.#A few showers.#A few showers.#A few showers.#A few showers.#A shower or two.##
+027021#Thursday Island#QLD#20130301#20130228#152235#25#31###############Showers, storm.########
+041103#Toowoomba#QLD#20130301#20130228#162810#17#21#17#20#15#21#17#21#########Showers, rain periods.#Showers, rain periods.#Showers, rain at times.#A few showers.#####
+032040#Townsville#QLD#20130301#20130228#160740#25#32#25#32#25#31#25#31#########A shower or two, chance storm.#Shower or two, chance storm.#Shower or two, chance storm.#Shower or two, chance storm.#####
+041525#Warwick#QLD#20130301#20130228#162810#18#23###############Showers, rain periods.########
+027045#Weipa#QLD#20130301#20130228#152235#25#32###############Showers, storm.########
+037051#Winton#QLD#20130301#20130228#145754#24#37###############Chance late shower, storm.########
+033294#Yeppoon#QLD#20130301#20130228#142616#24#28###############A few showers.########
