@@ -1,0 +1,22 @@
+{
+  "name": "nodeweather",
+  "version": "1.0.0",
+  "description": "A watering system that determines how much to water based on the weather.",
+  "main": "program.js",
+  "directories": {
+    "test": "tests"
+  },
+  "dependencies": {
+    "request": "~2.16.6",
+    "moment": "~2.2.1",
+    "suncalc": "~1.0.0",
+    "utest": "~0.0.6",
+    "time": "~0.9.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "node tests/sunrisetest.js && node tests/rainfalltest.js"
+  },
+  "author": "keza",
+  "license": "BSD-2-Clause"
+}
