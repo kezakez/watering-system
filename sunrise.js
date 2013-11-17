@@ -1,13 +1,15 @@
 var suncalc = require('suncalc');
 var moment = require('moment');
-var time = require('time')(Date);
+require('time')(Date);
 
 exports.getSunrise = function(localDate) {
 	var tz = "Australia/Brisbane";
 	
 	// check it is ok
 	var today = moment(localDate);
-	if (!today.isValid()) throw new "invalid date provided";
+	if (!today.isValid()) {
+        throw "invalid date provided";
+    }
 
 	// make it tomorrow with the correct timezone
 	var nextDay = today.add('d', 1);
@@ -21,4 +23,4 @@ exports.getSunrise = function(localDate) {
 	var sr = times.sunrise;
 	sr.setTimezone(tz);
 	return sr;
-}
+};

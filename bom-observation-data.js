@@ -1,8 +1,37 @@
-var request = require('request'),
-	fs = require('fs'),
-	util = require('util');
+var fs = require('fs');
 
-var dataDir = './data';
+var dataDir = __dirname+'/data/';
+
+exports.getRainWindowTotal = function (data, windowHours) {
+    var timeTotal = 0;
+    var rainTotal = 0;
+    for (var i = 0; i < data.length - 1; i++) {
+        var date = getDate(data[i].local_date_time_full);
+        var prevdate = getDate(data[i + 1].local_date_time_full);
+
+        var rain = data[i].rain_trace;
+        var prevrain = data[i + 1].rain_trace;
+
+        if (prevdate.hour() === 9) {
+            // rain resets to 0 at 9am
+            prevrain = 0;
+        }
+
+        var timeDiff = date.diff(prevdate, 'hours', true);
+        var rainDiff = rain - prevrain;
+
+        timeTotal += timeDiff;
+        rainTotal += rainDiff;
+        if (timeTotal >= windowHours) return rainTotal;
+    }
+    return rainTotal;
+};
+
+function getDate(dateString) {
+	var moment = require('moment');
+	// take the bom date string and converts to js date
+	return moment(dateString, "YYYYMMDDHHmmss");
+}
 
 exports.update = function(codes, callback) {
 	for (var i = 0; i < codes.length; i++) {
@@ -11,34 +40,58 @@ exports.update = function(codes, callback) {
 		var dir = parts[0];
 		exports.getLatestData(dir, code, function(error, response, body) {
 			if (!error && response.statusCode == 200) {
-				writeData(response, body, callback);
+				writeData(body, function() {
+					console.log("code: "+code);
+					callback(error, code, response);
+				});
 			} else {
 				console.log(error);
-				callback(error, response);
+				callback(error, code, response);
 			}
 		});
-	};
-}
+	}
+};
+
+exports.read = function(code, timeSteps, callback) {
+	fs.readdir(dataDir, function(err, files) {
+		files.sort().reverse();
+		var count = 0;
+		var data = [];
+		for (var i = 0; i < files.length; i++) {
+			var file = files[i];
+			if (file.indexOf(code) === 0) {
+                var contents = fs.readFileSync(dataDir+file);
+                if (contents) {
+                    count += 1;
+                    data.push(JSON.parse(contents));
+                    if (count >= timeSteps) break;
+                }
+			}
+		}
+		callback(err, data);
+	});
+};
 
 exports.getLatestData = function(dir, code, callback) {
+	var request = require('request');
 	request('http://www.bom.gov.au/fwo/'+dir+'/'+code+'.json', function (error, response, body) {
 		callback(error, response, body);
 	});
 };
 
-function writeData(response, body, callback) {
-	// parse data and store it in the data directory one file per day
+function writeData(body, callback) {
+    // parse data and store it in the data directory one file per day
 	// newer data trumps older data
-	ensureDataDirectory('./data/', function() {
+	ensureDataDirectory(dataDir, function() {
 		var bodyObj = JSON.parse(body);
 		var dataObs = bodyObj.observations.data;
 		for (var i = 0; i < dataObs.length; i++) {
 			var item = dataObs[i];
-			var code = item.history_product;
+			var code = item.history_product+"."+item.wmo;
 			var date = item.local_date_time_full;
 			var fileName = code+'-'+date+'.dat';
-			fs.writeFile('./data/' + fileName, util.inspect(item));
-		};
+			fs.writeFile(dataDir + fileName, JSON.stringify(item));
+		}
 		callback();
 	});
 }
