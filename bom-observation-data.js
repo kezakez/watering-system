@@ -41,7 +41,6 @@ exports.update = function(codes, callback) {
 		exports.getLatestData(dir, code, function(error, response, body) {
 			if (!error && response.statusCode == 200) {
 				writeData(body, function() {
-					console.log("code: "+code);
 					callback(error, code, response);
 				});
 			} else {
@@ -60,7 +59,7 @@ exports.read = function(code, timeSteps, callback) {
 		for (var i = 0; i < files.length; i++) {
 			var file = files[i];
 			if (file.indexOf(code) === 0) {
-                var contents = fs.readFileSync(dataDir+file);
+                var contents = fs.readFileSync(dataDir+file).toString();
                 if (contents) {
                     count += 1;
                     data.push(JSON.parse(contents));
@@ -90,7 +89,12 @@ function writeData(body, callback) {
 			var code = item.history_product+"."+item.wmo;
 			var date = item.local_date_time_full;
 			var fileName = code+'-'+date+'.dat';
-			fs.writeFile(dataDir + fileName, JSON.stringify(item));
+            var contents = JSON.stringify(item);
+            if (contents) {
+			    fs.writeFile(dataDir + fileName, contents);
+            } else {
+                console.log("no content in " + fileName);
+            }
 		}
 		callback();
 	});
