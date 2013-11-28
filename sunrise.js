@@ -11,9 +11,7 @@ exports.getSunrise = function(localDate) {
         throw "invalid date provided";
     }
 
-	// make it tomorrow with the correct timezone
-	var nextDay = today.add('d', 1);
-	var tomorrow = nextDay.toDate();
+	var tomorrow = today.toDate();
 	tomorrow.setTimezone(tz);
 
 	// get the sunrise time
