@@ -9,7 +9,7 @@ test('rainfall', {
 		var indata = weatherData.observations.data;
 
 		var target = require('../bom-observation-data.js');
-		var total = target.getRainWindowTotal(indata, 24);
+		var total = target.getRainWindowTotalFromData(indata, 24);
 		//console.log(total);
 		assert.ok(Math.abs(total - 64.8) < 0.01, "failed to get the correct rainfall");
 	}

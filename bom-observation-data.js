@@ -2,7 +2,14 @@ var fs = require('fs');
 
 var dataDir = __dirname+'/data/';
 
-exports.getRainWindowTotal = function (data, windowHours) {
+exports.getRainWindowTotal = function (code, windowHours, callback) {
+    exports.read(code, windowHours*2, function(err, data) {
+        var result = exports.getRainWindowTotalFromData(data, windowHours);
+        callback(result);
+    });
+};
+
+exports.getRainWindowTotalFromData = function (data, windowHours) {
     var timeTotal = 0;
     var rainTotal = 0;
     for (var i = 0; i < data.length - 1; i++) {
@@ -35,19 +42,21 @@ function getDate(dateString) {
 
 exports.update = function(codes, callback) {
 	for (var i = 0; i < codes.length; i++) {
-		var code = codes[i];
-		var parts = code.split('.');
-		var dir = parts[0];
-		exports.getLatestData(dir, code, function(error, response, body) {
-			if (!error && response.statusCode == 200) {
-				writeData(body, function() {
-					callback(error, code, response);
-				});
-			} else {
-				console.log(error);
-				callback(error, code, response);
-			}
-		});
+        (function(i) {
+            var code = codes[i];
+            var parts = code.split('.');
+            var dir = parts[0];
+            exports.getLatestData(dir, code, function(error, response, body) {
+                if (!error && response.statusCode == 200) {
+                    writeData(body, function() {
+                        if (callback) callback(error, code, response);
+                    });
+                } else {
+                    console.log(error);
+                    if (callback) callback(error, code, response);
+                }
+            });
+        })(i);
 	}
 };
 
