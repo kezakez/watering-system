@@ -13,7 +13,8 @@
     "time": "~0.10.0",
     "readline": "0.0.3",
     "node-schedule": "~0.1.13",
-    "emailjs": "~0.3.6"
+    "emailjs": "~0.3.6",
+    "onoff": "~0.3.0"
   },
   "devDependencies": {
     "utest": "~0.0.6",
