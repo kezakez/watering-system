@@ -1,5 +1,5 @@
 {
-  "name": "nodeweather",
+  "name": "watering-system",
   "version": "1.0.0",
   "description": "A watering system that determines how much to water based on the weather.",
   "main": "program.js",
