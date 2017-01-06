@@ -1,0 +1,16 @@
+{
+  "emailSender": {
+    "user": "your smtp username",
+    "password": "your smtp password",
+    "host": "smtp.gmail.com",
+    "ssl": true
+  },
+  "email" : {
+    "from": "Your from address",
+    "to": "You to address",
+    "subject": "watering system"
+  },
+  "bom": {
+    "weatherStationCodes": ["IDQ60901.94576"]
+  }
+}
