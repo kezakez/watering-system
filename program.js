@@ -1,53 +1,68 @@
-var schedule = require('node-schedule');
-var bomObs = require('./bom-observation-data.js');
+const schedule = require('node-schedule');
+const bomObs = require('./bom-observation-data.js');
 var hardware = require('./hardware.js');
-var config = require('./config.json');
+const config = require('./config.json');
+const readLine = require('readline');
+
+const tz = "Australia/Brisbane";
 
 // schedule the data to update every 6 hours
-var dataUpdateJob = new schedule.Job("Data Update Job", function(){
+const dataUpdateJob = scheduleCronJob('update data', '27 */2 * * *', function(){
     updateData();
-    log(dataUpdateJob);
+    logJobDetails(dataUpdateJob);
 });
-dataUpdateJob.schedule('27 */2 * * *');
-log(dataUpdateJob);
+logJobDetails(dataUpdateJob);
 
 // schedule a data update and run on mon wed & fri
-var runJob = new schedule.Job("Day Runner Job", function(){
+const runJob = scheduleCronJob('run job', '0 4 * * 1,3,5', function(){
     runToday();
-    log(runJob);
+    logJobDetails(runJob);
 });
-runJob.schedule('0 4 ? * 1,3,5');
-log(runJob);
+logJobDetails(runJob);
 
-function log(job) {
-    console.log(job.name + " next run: " + job.nextInvocation().toString());
+function logJobDetails(job) {
+    console.log(job.name + " next run: " + job.runDate());
+}
+
+function scheduleCronJob(name, cronString, callback) {
+    const job = new schedule.Job(name, callback);
+    job.schedule(cronString);
+    job.runDate = job.nextInvocation;
+    return job;
+}
+
+function scheduleDateJob(name, date, callback) {
+    const job = new schedule.Job(name, callback);
+    job.runOnDate(date);
+    job.runDate = () => date;
+    return job;
 }
 
 function updateData(callback) {
-    var codes = config.bom.weatherStationCodes;
+    const codes = config.bom.weatherStationCodes;
     console.log('updating data');
     bomObs.update(codes, function (err, code) {
-        console.log('done');
+        console.log('completed updating data');
         if (callback) callback(code);
     });
 }
 
 function runToday() {
-    var start = calculateStart();
-    var starterJob = new schedule.Job("Starter Job", function(){
+    const start = calculateStart();
+    const starterJob = scheduleDateJob('start job', start.toDate(), function(){
         updateData(function(code) {
             console.log('reading rainfall data');
 
             bomObs.getRainWindowTotal(code, 48, function(recentRain) {
-                var details = calculateEndDetails(start, recentRain);
-                var stop = details.stop;
+                const details = calculateEndDetails(start, recentRain);
+                const stop = details.stop;
 
                 if (!stop) {
                     console.log("not running");
                     return;
                 }
                 hardware.on(1);
-                var logStr = "starting water: " + start.toDate().setTimezone(tz).toString() + "\n" +
+                const logStr = "starting water: " + start.toDate().setTimezone(tz).toString() + "\n" +
                             "stopping water: " + stop.toDate().setTimezone(tz).toString() + "\n" +
                             "duration: " + details.duration + "\n" +
                             "recent rain: " + details.recentRain + "\n" +
@@ -56,22 +71,19 @@ function runToday() {
                 console.log(logStr);
                 sendEmail(logStr);
 
-                var stopperJob = new schedule.Job("Stopper Job", function(){
+                const stopperJob = scheduleDateJob('stop job', stop.toDate(), function(){
                     hardware.off(1);
                     console.log("stop");
                     sendEmail("stopped water");
                 });
-                stopperJob.schedule(stop.toDate());
-                log(stopperJob);
+                logJobDetails(stopperJob);
             });
         });
     });
-    starterJob.schedule(start.toDate());
-    log(starterJob);
+    logJobDetails(starterJob);
 }
 
-var readline = require('readline');
-var rl = readline.createInterface({
+const rl = readLine.createInterface({
     input: process.stdin,
     output: process.stdout
 });
@@ -82,37 +94,35 @@ rl.on('SIGINT', function() {
     process.exit();
 });
 
-var tz = "Australia/Brisbane";
-
 function calculateStart() {
-    var sunrise = require('./sunrise.js');
-    var moment = require('moment');
-    var time = require('time');
+    const sunrise = require('./sunrise.js');
+    const moment = require('moment');
+    const time = require('time');
     time(Date);
 
-    var today = new time.Date(Date.now(), tz);
+    const today = new time.Date(Date.now(), tz);
     console.log("today: " + today.toString());
 
-    var sunriseTime = sunrise.getSunrise(today);
+    const sunriseTime = sunrise.getSunrise(today);
     console.log("sunrise: " + sunriseTime.toString());
 
-    var start = moment(sunriseTime).add(2.5, "h");
-    var startString = start.toDate().setTimezone(tz).toString();
+    const start = moment(sunriseTime).add(2.5, "h");
+    const startString = start.toDate().setTimezone(tz).toString();
     console.log("start: " + startString);
     return start;
 }
 
 function calculateEndDetails(start, recentRain) {
-	var flowRate = 20 * 60; // L/h
-	var cropFactor = 1; // -
-	var waterArea = 10; // m^2
+	const flowRate = 20 * 60; // L/h
+	const cropFactor = 1; // -
+	const waterArea = 10; // m^2
 
-	var desiredWater = 10; // mm
-	var recentEvaporation = 7; // mm (average)
-	var calculatedWaterAmount = cropFactor * waterArea * (desiredWater - recentRain + recentEvaporation);
+	const desiredWater = 10; // mm
+	const recentEvaporation = 7; // mm (average)
+	let calculatedWaterAmount = cropFactor * waterArea * (desiredWater - recentRain + recentEvaporation);
 
-	var duration = 0;
-    var stop = null;
+	let duration = 0;
+    let stop = null;
 	if (calculatedWaterAmount <= 0) {
 		calculatedWaterAmount = 0;
 	} else {
@@ -121,7 +131,7 @@ function calculateEndDetails(start, recentRain) {
 		stop = start.clone().add(duration, "h");
 	}
 
-    var result = {};
+    let result = {};
     result.recentRain = recentRain;
     result.calculatedWaterAmount = calculatedWaterAmount;
     result.duration = (duration*60);
@@ -131,8 +141,8 @@ function calculateEndDetails(start, recentRain) {
 }
 
 function sendEmail(message) {
-    var email = require("emailjs");
-    var emailserver  = email.server.connect(config.emailSender);
+    const email = require("emailjs");
+    const emailserver  = email.server.connect(config.emailSender);
 
     // send the message and get a callback with an error or details of the message that was se
     emailserver.send({

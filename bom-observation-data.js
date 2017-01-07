@@ -1,15 +1,19 @@
 var fs = require('fs');
-
 var dataDir = __dirname+'/data/';
+exports.getRainWindowTotal = getRainWindowTotal;
+exports.getRainWindowTotalFromData = getRainWindowTotalFromData;
+exports.update = update;
+exports.read = read;
+exports.getLatestData = getLatestData;
 
-exports.getRainWindowTotal = function (code, windowHours, callback) {
+function getRainWindowTotal(code, windowHours, callback) {
     exports.read(code, windowHours*2, function(err, data) {
         var result = exports.getRainWindowTotalFromData(data, windowHours);
         callback(result);
     });
-};
+}
 
-exports.getRainWindowTotalFromData = function (data, windowHours) {
+function getRainWindowTotalFromData(data, windowHours) {
     var timeTotal = 0;
     var rainTotal = 0;
     for (var i = 0; i < data.length - 1; i++) {
@@ -32,7 +36,7 @@ exports.getRainWindowTotalFromData = function (data, windowHours) {
         if (timeTotal >= windowHours) return rainTotal;
     }
     return rainTotal;
-};
+}
 
 function getDate(dateString) {
 	var moment = require('moment');
@@ -40,12 +44,13 @@ function getDate(dateString) {
 	return moment(dateString, "YYYYMMDDHHmmss");
 }
 
-exports.update = function(codes, callback) {
+function update(codes, callback) {
 	for (var i = 0; i < codes.length; i++) {
         (function(i) {
             var code = codes[i];
             var parts = code.split('.');
             var dir = parts[0];
+            console.log('get latest');
             exports.getLatestData(dir, code, function(error, response, body) {
                 if (!error && response.statusCode == 200) {
                     writeData(body, function() {
@@ -58,9 +63,9 @@ exports.update = function(codes, callback) {
             });
         })(i);
 	}
-};
+}
 
-exports.read = function(code, timeSteps, callback) {
+function read(code, timeSteps, callback) {
 	fs.readdir(dataDir, function(err, files) {
 		files.sort().reverse();
 		var count = 0;
@@ -78,14 +83,14 @@ exports.read = function(code, timeSteps, callback) {
 		}
 		callback(err, data);
 	});
-};
+}
 
-exports.getLatestData = function(dir, code, callback) {
+function getLatestData(dir, code, callback) {
 	var request = require('request');
 	request('http://www.bom.gov.au/fwo/'+dir+'/'+code+'.json', function (error, response, body) {
 		callback(error, response, body);
 	});
-};
+}
 
 function writeData(body, callback) {
     // parse data and store it in the data directory one file per day
@@ -100,7 +105,11 @@ function writeData(body, callback) {
 			var fileName = code+'-'+date+'.dat';
             var contents = JSON.stringify(item);
             if (contents) {
-			    fs.writeFile(dataDir + fileName, contents);
+			    fs.writeFile(dataDir + fileName, contents, (err) => {
+			        if (err) {
+			            console.log(err);
+                    }
+                });
             } else {
                 console.log("no content in " + fileName);
             }

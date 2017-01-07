@@ -9,6 +9,8 @@ test('sunrise', {
 		var resultLocal = target.getSunrise(inputLocal);
 		var expectedLocal = new Date(2013,2,2,5,42,30);
 
+		console.log(resultLocal.toString());
+        console.log(expectedLocal.toString());
 		assert.equal(resultLocal.toString(), expectedLocal.toString(), "failed to calculate sunrise");
 	}
 });
